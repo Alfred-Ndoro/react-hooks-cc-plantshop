@@ -1,7 +1,7 @@
 // components/NewPlantForm.js
 import React, { useState } from 'react';
 
-function NewPlantForm({ onAddPlant }) {
+function NewPlantForm({ onAddPlant, isLoading = false }) {
   const [formData, setFormData] = useState({
     name: '',
     image: '',
@@ -18,19 +18,22 @@ function NewPlantForm({ onAddPlant }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.image || !formData.price) {
+    if (!formData.name.trim() || !formData.image.trim() || !formData.price) {
       alert('Please fill out all fields');
       return;
     }
 
+    // Don't parse the price - send it as string to match test expectation
     const newPlant = {
-      ...formData,
-      price: parseFloat(formData.price)
+      name: formData.name.trim(),
+      image: formData.image.trim(),
+      price: formData.price // Keep as string
     };
 
+    console.log('Submitting plant:', newPlant); // Debug log
     onAddPlant(newPlant);
     
-    // Reset form
+    // Reset form after successful submission
     setFormData({
       name: '',
       image: '',
@@ -39,9 +42,8 @@ function NewPlantForm({ onAddPlant }) {
   };
 
   return (
-    <form className="new-plant-form" onSubmit={handleSubmit}>
-      <h2>Add New Plant</h2>
-      
+    <form className="new-plant-form" onSubmit={handleSubmit} data-testid="new-plant-form">
+      <h2>New Plant</h2>
       <div className="form-group">
         <label htmlFor="name">Plant Name</label>
         <input
@@ -50,10 +52,10 @@ function NewPlantForm({ onAddPlant }) {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Enter plant name"
+          placeholder="Plant name"
+          disabled={isLoading}
         />
       </div>
-      
       <div className="form-group">
         <label htmlFor="image">Image URL</label>
         <input
@@ -62,10 +64,10 @@ function NewPlantForm({ onAddPlant }) {
           name="image"
           value={formData.image}
           onChange={handleChange}
-          placeholder="Enter image URL"
+          placeholder="Image URL"
+          disabled={isLoading}
         />
       </div>
-      
       <div className="form-group">
         <label htmlFor="price">Price</label>
         <input
@@ -73,14 +75,15 @@ function NewPlantForm({ onAddPlant }) {
           id="price"
           name="price"
           step="0.01"
+          min="0"
           value={formData.price}
           onChange={handleChange}
-          placeholder="Enter price"
+          placeholder="Price"
+          disabled={isLoading}
         />
       </div>
-      
-      <button type="submit" className="add-plant-btn">
-        Add Plant
+      <button type="submit" className="add-plant-btn" disabled={isLoading}>
+        {isLoading ? 'Adding Plant...' : 'Add Plant'}
       </button>
     </form>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, fireEvent, within } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from '../../components/App';
 import '@testing-library/jest-dom';
 

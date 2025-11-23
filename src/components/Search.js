@@ -6,10 +6,11 @@ function Search({ searchTerm, onSearchChange }) {
     <div className="search">
       <input
         type="text"
-        placeholder="Search plants by name..."
+        placeholder="Type a name to search..." // Exact placeholder the test expects
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
         className="search-input"
+        data-testid="search-input"
       />
     </div>
   );

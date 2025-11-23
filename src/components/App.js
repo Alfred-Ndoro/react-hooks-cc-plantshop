@@ -4,6 +4,7 @@ import PlantList from './PlantList';
 import NewPlantForm from './NewPlantForm';
 import Search from './Search';
 
+
 const BASE_URL = 'http://localhost:6001';
 
 function App() {
@@ -25,21 +26,36 @@ function App() {
     }
   };
 
-  const addPlant = async (newPlant) => {
-    try {
-      const response = await fetch(`${BASE_URL}/plants`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newPlant),
+// App.js - Focus on the addPlant function
+const addPlant = async (plantData) => {
+  try {
+    console.log('Adding plant:', plantData); // Debug log
+    
+    const response = await fetch('http://localhost:6001/plants', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON',
+      },
+      body: JSON.stringify(plantData),
+    });
+    
+    if (response.ok) {
+      const newPlant = await response.json();
+      console.log('Plant added successfully:', newPlant); // Debug log
+      
+      // Add the new plant to state
+      setPlants(prevPlants => {
+        const updated = [...prevPlants, newPlant];
+        console.log('Plants after addition:', updated); // Debug log
+        return updated;
       });
-      const savedPlant = await response.json();
-      setPlants([...plants, savedPlant]);
-    } catch (error) {
-      console.error('Error adding plant:', error);
+    } else {
+      console.error('Failed to add plant');
     }
-  };
+  } catch (error) {
+    console.error('Error adding plant:', error);
+  }
+};
 
   const toggleSoldOut = (plantId) => {
     setPlants(plants.map(plant => 
